@@ -6,15 +6,7 @@ use App\Http\Controllers\Web\TaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/ui-dashboard');
-
-// Temporary view-only route for UI testing (no auth) - remove when integrating backend
-Route::view('/ui-dashboard', 'dashboard')->name('ui.dashboard');
-
-// API and Calendar Date routes have been moved to auth middleware group for security
-
-// UI view for calendar (no auth) - quick preview
-Route::view('/ui-calendar', 'calendar')->name('ui.calendar');
+Route::redirect('/', '/login');
 
 /*
 |--------------------------------------------------------------------------
@@ -56,7 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/api/calendar-tasks', function () {
         $today = now()->toDateString();
         $query = \App\Models\Task::query();
-        
+
         if (auth()->user()->role === \App\Enums\UserRole::STAFF) {
             $query->where('user_id', auth()->id());
         }
@@ -64,7 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         $tasks = $query->select('id', 'task_number', 'title', 'deadline', 'status')->get()->map(function ($t) use ($today) {
             $deadline = $t->deadline?->toDateString();
             $status = $t->status;
-            
+
             // Check status correctly using both enum object or value check
             $statusValue = $status instanceof \App\Enums\TaskStatus ? $status->value : $status;
 
@@ -115,7 +107,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Web view: daftar tugas pada tanggal tertentu (scoped to role)
     Route::get('/calendar/date/{date}', function ($date) {
         $query = \App\Models\Task::whereDate('deadline', $date);
-        
+
         if (auth()->user()->role === \App\Enums\UserRole::STAFF) {
             $query->where('user_id', auth()->id());
         }
