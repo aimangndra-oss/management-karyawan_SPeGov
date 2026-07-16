@@ -6,20 +6,43 @@
 
     {{-- Control Panel --}}
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 bg-white p-4 rounded-3 border border-light shadow-sm mb-4">
-        <div class="d-flex items-center gap-3">
-            <h2 id="calendar-month-year" class="text-xl font-bold text-dark m-0">---</h2>
+        
+        {{-- Bagian Header Navigasi Kalender --}}
+        <div class="d-flex align-items-center gap-3">
             
-            <div class="btn-group border rounded-pill p-1 bg-light">
-                <button onclick="changeMonth(-1)" class="btn btn-sm btn-light rounded-circle p-1 px-2 border-0" aria-label="Previous Month">
+            <div class="d-flex align-items-center gap-2">
+                <select id="monthSelect" class="form-select fw-bold text-dark border-0 bg-light px-5     py-2" style="width: auto; cursor: pointer; border-radius: 0.75rem;" onchange="handleSelectChange()">
+                    <option value="0">Januari</option>
+                    <option value="1">Februari</option>
+                    <option value="2">Maret</option>
+                    <option value="3">April</option>
+                    <option value="4">Mei</option>
+                    <option value="5">Juni</option>
+                    <option value="6">Juli</option>
+                    <option value="7">Agustus</option>
+                    <option value="8">September</option>
+                    <option value="9">Oktober</option>
+                    <option value="10">November</option>
+                    <option value="11">Desember</option>
+                </select>
+                
+                <select id="yearSelect" class="form-select fw-bold text-dark border-0 bg-light px-5 py-2" style="width: auto; cursor: pointer; border-radius: 0.75rem;" onchange="handleSelectChange()">
+                    {{-- Akan diisi otomatis melalui JavaScript --}}
+                </select>
+            </div>
+            
+            <div class="d-flex align-items-center border rounded-pill bg-light ms-2" style="padding: 2px 4px;">
+                <button onclick="changeMonth(-1)" class="btn btn-sm border-0 text-secondary fs-6 px-2" aria-label="Previous Month">
                     <i class="bi bi-chevron-left"></i>
                 </button>
-                <button onclick="goToToday()" class="btn btn-sm btn-light rounded-pill px-3 border-0 fw-semibold text-secondary">Hari Ini</button>
-                <button onclick="changeMonth(1)" class="btn btn-sm btn-light rounded-circle p-1 px-2 border-0" aria-label="Next Month">
+                <div class="vr bg-secondary opacity-25" style="width: 1.5px; height: 20px;"></div>
+                <button onclick="changeMonth(1)" class="btn btn-sm border-0 text-secondary fs-6 px-2" aria-label="Next Month">
                     <i class="bi bi-chevron-right"></i>
                 </button>
             </div>
         </div>
 
+        {{-- Bagian Keterangan Warna (Legend) --}}
         <div class="d-flex align-items-center gap-4 text-xs font-medium text-secondary">
             <div class="d-flex align-items-center gap-2"><span class="badge rounded-circle bg-success p-1">&nbsp;</span> Selesai</div>
             <div class="d-flex align-items-center gap-2"><span class="badge rounded-circle bg-danger p-1">&nbsp;</span> Lewat Deadline</div>
@@ -51,20 +74,30 @@
     // data awal kosong, akan diisi lewat API
     let taskData = [];
 
-    const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-    
     // Gunakan tanggal sistem sebagai default
     let currentDate = new Date();
     let displayedYear = currentDate.getFullYear();
     let displayedMonth = currentDate.getMonth();
 
+    // Fungsi untuk mengisi pilihan dropdown tahun (5 tahun ke belakang dan 5 tahun ke depan)
+    function populateYearDropdown() {
+        const yearSelect = document.getElementById('yearSelect');
+        const currentY = new Date().getFullYear();
+        yearSelect.innerHTML = '';
+        for (let y = currentY - 5; y <= currentY + 5; y++) {
+            yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
+        }
+    }
+
     function renderCalendar(year, month) {
         const gridContainer = document.getElementById('calendar-grid');
-        const headerLabel = document.getElementById('calendar-month-year');
+        const monthSelect = document.getElementById('monthSelect');
+        const yearSelect = document.getElementById('yearSelect');
         gridContainer.innerHTML = ''; // Reset isi grid sebelumnya
 
-        // Set text header (Contoh: "Juli 2026")
-        headerLabel.innerText = `${monthNames[month]} ${year}`;
+        // Sinkronisasi nilai Dropdown dengan bulan & tahun yang sedang dirender
+        monthSelect.value = month;
+        yearSelect.value = year;
 
         // Cari tahu hari pertama di bulan ini (0 = Minggu, 1 = Senin, dst)
         let firstDayIndex = new Date(year, month, 1).getDay();
@@ -86,10 +119,7 @@
 
         // 2. Mengisi tanggal di bulan aktif
         for (let day = 1; day <= totalDaysInMonth; day++) {
-            // Format string tanggal untuk pengecekan data tugas (YYYY-MM-DD)
             const currentStrDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-            
-            // Cek apakah tanggal hari ini sama dengan tanggal sistem berjalan
             const isToday = (new Date().toDateString() === new Date(year, month, day).toDateString());
             
             let cellClass = "calendar-day-cell";
@@ -145,7 +175,14 @@
         }
     }
 
-    // Fungsi kontrol bulan
+    // Fungsi yang dipanggil saat user mengubah Dropdown Bulan atau Tahun
+    function handleSelectChange() {
+        displayedMonth = parseInt(document.getElementById('monthSelect').value);
+        displayedYear = parseInt(document.getElementById('yearSelect').value);
+        renderCalendar(displayedYear, displayedMonth);
+    }
+
+    // Fungsi kontrol dari panah Kiri / Kanan
     function changeMonth(direction) {
         displayedMonth += direction;
         if (displayedMonth > 11) {
@@ -155,14 +192,8 @@
             displayedMonth = 11;
             displayedYear--;
         }
-        renderCalendar(displayedYear, displayedMonth);
-    }
-
-    // Kembali ke hari ini
-    function goToToday() {
-        const today = new Date();
-        displayedYear = today.getFullYear();
-        displayedMonth = today.getMonth();
+        
+        // Render ulang (nilai dropdown akan diupdate di dalam renderCalendar)
         renderCalendar(displayedYear, displayedMonth);
     }
 
@@ -171,7 +202,6 @@
         try {
             const res = await fetch('/api/calendar-tasks');
             const data = await res.json();
-            // Simpan numeric id untuk fetch detail, simpan nomor tugas terpisah untuk tampilan
             taskData = data.map(t => ({ id: t.id, number: t.task_number ?? ('TGS-' + t.id), title: t.title, date: t.deadline, status: t.status }));
         } catch (e) {
             console.error('Gagal memuat data tugas:', e);
@@ -181,12 +211,13 @@
 
     // Jalankan fungsi saat halaman pertama kali dibuka
     document.addEventListener("DOMContentLoaded", () => {
+        populateYearDropdown(); // Panggil fungsi isi dropdown tahun
         loadTasksAndRender();
+        
         // Delegated click handler: buka modal detail ketika klik kartu tugas
         document.getElementById('calendar-grid').addEventListener('click', async (e) => {
             const el = e.target.closest('[data-task-id]');
             if (!el) return;
-            // Prevent default agar tidak membuka link date detail
             e.preventDefault();
             e.stopPropagation();
             
@@ -203,7 +234,7 @@
         });
     });
 
-    // Jika query param 'date' diberikan, fokus ke bulan tersebut dan buka daftar tugas di tab baru
+    // Jika query param 'date' diberikan, fokus ke bulan tersebut
     (function handleInitialDateParam(){
         const params = new URLSearchParams(window.location.search);
         const date = params.get('date');
@@ -213,8 +244,11 @@
             if (!isNaN(d)) {
                 displayedYear = d.getFullYear();
                 displayedMonth = d.getMonth();
-                renderCalendar(displayedYear, displayedMonth);
-                window.open(`/calendar/date/${date}`, '_blank');
+                // Tunggu DOM load untuk pastikan dropdown ada, bisa diletakkan di dalam render
+                setTimeout(() => {
+                    renderCalendar(displayedYear, displayedMonth);
+                    window.open(`/calendar/date/${date}`, '_blank');
+                }, 100);
             }
         } catch (e) {
             console.warn('Invalid date param', e);

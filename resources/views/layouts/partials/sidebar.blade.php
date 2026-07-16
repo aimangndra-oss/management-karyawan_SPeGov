@@ -1,16 +1,19 @@
 {{-- Sidebar --}}
 <aside class="sidebar" id="sidebar">
-    {{-- Brand --}}
-    <div class="sidebar-brand">
-        <div class="sidebar-brand-icon" style="background: white; border-radius: 50%; padding: 3px;">
-            <img src="/images/logo.png" alt="Logo" class="img-fluid" style="max-height: 32px; object-fit: contain;">
+  {{-- Brand --}}
+    <div class="sidebar-brand" style="display: flex; flex-direction: column; justify-content: center; align-items: flex-start; text-align: left; height: auto; padding: 2rem 1rem 1.5rem 1.25rem; gap: 0.85rem;">
+        
+        <div style="display: flex; align-items: center; justify-content: flex-start; width: 100%;">
+            <img src="/images/logoo.png" alt="Logo" class="img-fluid" style="width: 85%; max-width: 180px; height: auto; object-fit: contain;">
         </div>
-        <div class="sidebar-brand-text">
-            <div class="brand-title">DISKOMINFO</div>
-            <div class="brand-subtitle">Bidang Statistika Persandian dan E-Goverment</div>
+        
+        <div class="sidebar-brand-text" style="margin: 0; padding: 0;">
+            <div class="brand-subtitle" style="font-weight: 600; font-size: 0.85rem; line-height: 1.4; letter-spacing: 0.02em; color: white;">
+                <br>Bidang Statistika<br>Persandian dan E-Goverment
+            </div>
         </div>
     </div>
-
+    
     {{-- Navigation --}}
     <nav class="sidebar-nav">
         <ul class="nav flex-column">
