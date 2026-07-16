@@ -69,7 +69,7 @@
         box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
     }
 
-    /* STYLE UNTUK HARI LIBUR / ACARA */
+    /* STYLE UNTUK HARI LIBUR / AKHIR PEKAN */
     .holiday-cell {
         background: #fff0f0 !important; 
     }
@@ -192,7 +192,7 @@
                     </div>
                     <div class="d-flex align-items-center gap-2">
                         <div style="width: 16px; height: 16px; background: #fff0f0; border: 1px solid #fecaca; border-radius: 4px;"></div> 
-                        <span class="fw-semibold text-nowrap">Libur / Acara</span>
+                        <span class="fw-semibold text-nowrap">Libur Akhir Pekan</span>
                     </div>
                 </div>
 
@@ -242,12 +242,6 @@
     let displayedYear = currentDate.getFullYear();
     let displayedMonth = currentDate.getMonth();
 
-    const eventHolidays = {
-        '2026-07-19': 'Tahun Baru Islam',
-        '2026-08-17': 'HUT Kemerdekaan RI',
-        '2026-12-25': 'Hari Raya Natal'
-    };
-
     function populateYearDropdown() {
         const yearSelect = document.getElementById('yearSelect');
         const currentY = new Date().getFullYear();
@@ -288,8 +282,8 @@
             const dayOfWeek = new Date(year, month, day).getDay();
             const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
             
-            // Terapkan libur weekend atau libur acara khusus
-            const holidayName = eventHolidays[currentStrDate] || (isWeekend ? 'Libur Akhir Pekan' : null);
+            // HANYA TERAPKAN LIBUR AKHIR PEKAN (TIDAK ADA EVENT KHUSUS LAINNYA)
+            const holidayName = isWeekend ? 'Libur Akhir Pekan' : null;
             
             let cellClass = "calendar-day-cell";
             let numberClass = "calendar-day-number";
