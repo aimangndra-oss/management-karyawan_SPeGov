@@ -25,4 +25,4 @@
             <div class="h-10 w-10 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-full text-white flex items-center justify-center font-semibold">A</div>
         </div>
     </div>
-</div>
+</div>  
