@@ -4,396 +4,228 @@
 
 @section('content')
 
-    {{-- Kustomisasi Style Kalender & Navbar Premium --}}
-    <style>
-        /* ================= NAVBAR STYLES ================= */
-        .top-navbar {
-            display: flex !important;
-            justify-content: space-between !important;
-            align-items: center !important;
-            gap: 2rem !important;
-            padding: 0.75rem 1.5rem !important;
-            background-color: #ffffff !important;
-            border-bottom: 1px solid #f3f4f6 !important;
-            border-radius: 12px !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
-        }
+{{-- Desain CSS Khusus untuk Kalender Premium --}}
+<style>
+    .calendar-wrapper {
+        background: #ffffff;
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        border: 1px solid #e2e8f0;
+    }
+    .calendar-header-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        background: #f8fafc;
+        text-align: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: #64748b;
+        padding: 1rem 0;
+        border-bottom: 1px solid #e2e8f0;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        background: #e2e8f0; 
+        gap: 1px; 
+    }
+    .calendar-day-cell {
+        background: #ffffff;
+        min-height: 140px; 
+        padding: 0.75rem;
+        text-decoration: none !important;
+        color: inherit;
+        transition: all 0.2s ease-in-out;
+        display: flex;
+        flex-direction: column;
+    }
+    .calendar-day-cell:hover {
+        background: #f8fafc;
+        cursor: pointer;
+    }
+    .calendar-day-number {
+        font-weight: 600;
+        font-size: 1rem;
+        color: #334155;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        transition: all 0.2s;
+    }
+    
+    /* STYLE UNTUK HARI INI */
+    .today-cell {
+        background: #eff6ff !important; 
+    }
+    .today-number {
+        background: #3b82f6;
+        color: #ffffff;
+        box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
+    }
 
-        .navbar-left {
-            display: flex !important;
-            align-items: center !important;
-            flex-shrink: 0 !important;
-        }
+    /* STYLE UNTUK HARI LIBUR / AKHIR PEKAN */
+    .holiday-cell {
+        background: #fff0f0 !important; 
+    }
+    .holiday-cell:hover {
+        background: #ffe4e4 !important;
+    }
+    .holiday-number {
+        color: #dc2626 !important; 
+        background: #fee2e2;
+    }
+    .holiday-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: #dc2626;
+        margin-top: auto; 
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        justify-content: flex-end;
+    }
 
-        .navbar-greeting {
-            min-width: 0 !important;
-        }
-        .navbar-greeting .greeting-text {
-            font-family: 'Inter', sans-serif !important;
-            font-weight: 500 !important;
-            font-size: 0.95rem !important;
-            color: #374151 !important;
-            line-height: 1.3 !important;
-            white-space: nowrap !important;
-        }
-        .navbar-greeting .greeting-text strong {
-            font-weight: 700 !important;
-            color: #2563eb !important;
-        }
-        .navbar-greeting .greeting-sub {
-            font-family: 'Inter', sans-serif !important;
-            font-size: 0.75rem !important;
-            color: #9ca3af !important;
-            margin-top: 2px !important;
-            white-space: nowrap !important;
-        }
+    /* STYLE UNTUK HARI YANG ADA PEKERJAAN */
+    .has-task-cell {
+        box-shadow: inset 0 0 0 2px #22c55e !important;
+        background: #f0fdf4; 
+    }
+    
+    /* ANIMASI UNTUK DEADLINE TERLEWAT */
+    @keyframes pulse-danger {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.25); color: #b91c1c; }
+        100% { transform: scale(1); }
+    }
+    .icon-overdue-alert {
+        animation: pulse-danger 1.5s infinite;
+    }
+    
+    .muted-day {
+        background: #fcfcfc;
+    }
+    .muted-day .calendar-day-number {
+        color: #cbd5e1;
+    }
+    
+    .calendar-tasks-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        margin-top: 0.5rem;
+    }
+    .calendar-task-item {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.5rem;
+        border-radius: 0.375rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-weight: 600;
+        transition: transform 0.1s;
+    }
+    .calendar-task-item:hover {
+        transform: scale(1.02);
+    }
+    .task-status-done { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .task-status-overdue { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .task-status-upcoming { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+</style>
 
-        .search-box {
-            position: relative !important;
-            width: 100% !important;
-            max-width: 550px !important;
-            flex-grow: 1 !important;
-        }
-        .search-icon {
-            position: absolute !important;
-            left: 14px !important;
-            top: 50% !important;
-            transform: translateY(-50%) !important;
-            width: 18px !important;
-            height: 18px !important;
-            color: #9ca3af !important;
-        }
-        .search-box input {
-            width: 100% !important;
-            padding: 0.55rem 1rem 0.55rem 2.5rem !important;
-            border: 1px solid #e5e7eb !important;
-            border-radius: 50px !important;
-            background-color: #f9fafb !important;
-            font-size: 0.85rem !important;
-            color: #374151 !important;
-            outline: none !important;
-            transition: all 0.2s !important;
-        }
-        .search-box input:focus {
-            border-color: #3b82f6 !important;
-            background-color: #ffffff !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
-        }
-
-        .navbar-user {
-            display: flex !important;
-            align-items: center !important;
-            flex-shrink: 0 !important;
-        }
-        .user-info {
-            display: flex !important;
-            align-items: center !important;
-            gap: 12px !important;
-            padding: 6px 12px !important;
-            border-radius: 50px !important;
-            transition: background 0.2s !important;
-            white-space: nowrap !important;
-            text-decoration: none !important;
-        }
-        .user-info:hover {
-            background-color: #f3f4f6 !important;
-        }
-        .user-info-text {
-            text-align: right !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
-        }
-        .user-name {
-            font-size: 0.85rem !important;
-            font-weight: 700 !important;
-            color: #1f2937 !important;
-            line-height: 1.2 !important;
-            white-space: nowrap !important;
-        }
-        .user-role {
-            font-size: 0.75rem !important;
-            color: #6b7280 !important;
-            line-height: 1.2 !important;
-            margin-top: 2px !important;
-            white-space: nowrap !important;
-        }
-        .user-avatar {
-            width: 40px !important;
-            height: 40px !important;
-            border-radius: 50% !important;
-            background-color: #3b82f6 !important;
-            color: #ffffff !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            font-weight: 600 !important;
-            font-size: 1rem !important;
-            flex-shrink: 0 !important;
-        }
-
-        /* ================= CALENDAR STYLES ================= */
-        .calendar-container {
-            background-color: #ffffff;
-            border-radius: 12px;
-            border: 1px solid #f3f4f6;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-            overflow: hidden;
-        }
-
-        .calendar-header-days {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            background-color: #f8fafc;
-            border-bottom: 1px solid #e2e8f0;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #64748b;
-            padding: 12px 0;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            grid-auto-rows: 120px;
-        }
-
-        .calendar-day-cell {
-            border-right: 1px solid #f1f5f9;
-            border-bottom: 1px solid #f1f5f9;
-            padding: 8px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            text-decoration: none !important;
-            transition: background-color 0.2s;
-            cursor: pointer;
-        }
-        .calendar-day-cell:nth-child(7n) {
-            border-right: none;
-        }
-        .calendar-day-cell:hover {
-            background-color: #f8fafc;
-        }
-
-        .calendar-day-number {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #475569;
-            align-self: flex-start;
-            margin-bottom: 6px;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-
-        .muted-day {
-            background-color: #f8fafc;
-            pointer-events: none;
-        }
-        .muted-day .calendar-day-number {
-            color: #cbd5e1;
-        }
-
-        .today-cell {
-            background-color: #eff6ff;
-        }
-        .today-cell:hover {
-            background-color: #dbeafe;
-        }
-        .today-number {
-            background-color: #3b82f6;
-            color: #ffffff !important;
-            box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
-        }
-
-        .calendar-tasks-list {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            overflow-y: auto;
-            flex-grow: 1;
-            max-height: calc(100% - 30px);
-        }
-
-        /* Task Items Styling */
-        .calendar-task-item {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 4px 8px;
-            border-radius: 6px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: transform 0.15s, box-shadow 0.15s;
-        }
-        .calendar-task-item:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Status Colors */
-        .task-status-done {
-            background-color: #ecfdf5;
-            color: #047857;
-            border-left: 3px solid #10b981;
-        }
-        .task-status-overdue {
-            background-color: #fef2f2;
-            color: #b91c1c;
-            border-left: 3px solid #ef4444;
-        }
-        .task-status-upcoming {
-            background-color: #eff6ff;
-            color: #1d4ed8;
-            border-left: 3px solid #3b82f6;
-        }
-
-        .task-status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            display: inline-block;
-            flex-shrink: 0;
-        }
-        .task-status-done .task-status-dot { background-color: #10b981; }
-        .task-status-overdue .task-status-dot { background-color: #ef4444; }
-        .task-status-upcoming .task-status-dot { background-color: #3b82f6; }
-
-        @media (max-width: 768px) {
-            .top-navbar {
-                padding: 0.5rem 1rem !important;
-                gap: 1rem !important;
-            }
-            .search-box {
-                max-width: 100% !important;
-            }
-        }
-    </style>
-
-    {{-- 1. Top Navbar --}}
-    <nav class="top-navbar mb-4">
-        <div class="navbar-left">
-            <button class="btn d-lg-none p-1 me-2" onclick="toggleSidebar()" aria-label="Toggle sidebar">
-                <i class="bi bi-list fs-4 text-secondary"></i>
-            </button>
-
-            <div class="navbar-greeting d-none d-md-block">
-                <div class="greeting-text">
-                    {{-- DI SINI PERBAIKANNYA: Menghapus explode agar menampilkan nama utuh --}}
-                    Selamat Datang, <strong>{{ Auth::user()->name }}</strong>
-                </div>
-                <div class="greeting-sub">{{ now()->locale('id')->translatedFormat('l, d F Y') }}</div>
-            </div>
-        </div>
-
-        <div class="search-box">
-            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-            </svg>
-            <input type="text" placeholder="Cari Tugas berdasarkan Nomor, Judul, atau PIC..." id="searchInput" />
-        </div>
-
-        <div class="dropdown navbar-user">
-            <div class="user-info" data-bs-toggle="dropdown" aria-expanded="false" role="button">
-                <div class="user-info-text d-none d-sm-flex">
-                    <div class="user-name">{{ Auth::user()->name }}</div>
-                    <div class="user-role">{{ Auth::user()->role->label() }}</div>
-                </div>
-                <div class="user-avatar shadow-sm">
-                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                </div>
-            </div>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
-                <li>
-                    <a class="dropdown-item py-2" href="{{ route('profile.edit') }}">
-                        <i class="bi bi-person me-2 text-secondary"></i> Profil Saya
-                    </a>
-                </li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="dropdown-item py-2 text-danger">
-                            <i class="bi bi-box-arrow-right me-2"></i> Keluar
-                        </button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    {{-- 2. Control Panel --}}
-    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 bg-white p-4 rounded-3 border border-light shadow-sm mb-4">
-        <div class="d-flex align-items-center gap-3">
-            <div class="d-flex align-items-center gap-2">
-                <select id="monthSelect" class="form-select fw-bold text-dark border-0 bg-light px-4 py-2" style="width: auto; cursor: pointer; border-radius: 0.75rem;" onchange="handleSelectChange()">
-                    <option value="0">Januari</option>
-                    <option value="1">Februari</option>
-                    <option value="2">Maret</option>
-                    <option value="3">April</option>
-                    <option value="4">Mei</option>
-                    <option value="5">Juni</option>
-                    <option value="6">Juli</option>
-                    <option value="7">Agustus</option>
-                    <option value="8">September</option>
-                    <option value="9">Oktober</option>
-                    <option value="10">November</option>
-                    <option value="11">Desember</option>
-                </select>
-                
-                <select id="yearSelect" class="form-select fw-bold text-dark border-0 bg-light px-4 py-2" style="width: auto; cursor: pointer; border-radius: 0.75rem;" onchange="handleSelectChange()">
-                    {{-- Diisi via JS --}}
-                </select>
-            </div>
+    {{-- Control Panel --}}
+    <div class="bg-white p-3 p-md-4 rounded-4 shadow-sm mb-4 border-0">
+        <div class="d-flex flex-column flex-xl-row align-items-start align-items-xl-center justify-content-between gap-4">
             
-            <div class="d-flex align-items-center border rounded-pill bg-light ms-2" style="padding: 2px 4px;">
-                <button onclick="changeMonth(-1)" class="btn btn-sm border-0 text-secondary fs-6 px-2" aria-label="Previous Month">
-                    <i class="bi bi-chevron-left"></i>
-                </button>
-                <div class="vr bg-secondary opacity-25" style="width: 1.5px; height: 20px;"></div>
-                <button onclick="changeMonth(1)" class="btn btn-sm border-0 text-secondary fs-6 px-2" aria-label="Next Month">
-                    <i class="bi bi-chevron-right"></i>
-                </button>
+            {{-- Navigasi Bulan, Tahun & Tombol --}}
+            <div class="d-flex flex-wrap align-items-center gap-3">
+                <div class="d-flex align-items-center gap-2">
+                    <select id="monthSelect" class="form-select fw-bold text-dark border-0 bg-light px-4 py-2 fs-6" style="min-width: 150px; cursor: pointer; border-radius: 0.75rem; box-shadow: none;" onchange="handleSelectChange()">
+                        <option value="0">Januari</option>
+                        <option value="1">Februari</option>
+                        <option value="2">Maret</option>
+                        <option value="3">April</option>
+                        <option value="4">Mei</option>
+                        <option value="5">Juni</option>
+                        <option value="6">Juli</option>
+                        <option value="7">Agustus</option>
+                        <option value="8">September</option>
+                        <option value="9">Oktober</option>
+                        <option value="10">November</option>
+                        <option value="11">Desember</option>
+                    </select>
+                    
+                    <select id="yearSelect" class="form-select fw-bold text-dark border-0 bg-light px-4 py-2 fs-6" style="min-width: 110px; cursor: pointer; border-radius: 0.75rem; box-shadow: none;" onchange="handleSelectChange()">
+                    </select>
+                </div>
+                
+                <div class="d-flex align-items-center border rounded-pill bg-white shadow-sm" style="padding: 4px;">
+                    <button onclick="changeMonth(-1)" class="btn btn-sm border-0 text-primary fs-5 px-3 rounded-pill" aria-label="Previous Month">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <div class="vr bg-secondary opacity-10" style="width: 2px; height: 24px;"></div>
+                    <button onclick="changeMonth(1)" class="btn btn-sm border-0 text-primary fs-5 px-3 rounded-pill" aria-label="Next Month">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
             </div>
-        </div>
 
-        <div class="d-flex align-items-center gap-3 text-xs font-semibold text-secondary">
-            <div class="d-flex align-items-center gap-1.5"><span class="badge rounded-circle bg-success p-1" style="width: 8px; height: 8px;">&nbsp;</span> Selesai</div>
-            <div class="d-flex align-items-center gap-1.5"><span class="badge rounded-circle bg-danger p-1" style="width: 8px; height: 8px;">&nbsp;</span> Lewat Deadline</div>
-            <div class="d-flex align-items-center gap-1.5"><span class="badge rounded-circle bg-primary p-1" style="width: 8px; height: 8px;">&nbsp;</span> Akan Datang</div>
+            {{-- Legend Lengkap --}}
+            <div class="d-flex flex-wrap align-items-center gap-3 gap-md-4 text-secondary bg-light px-4 py-3 rounded-4" style="font-size: 0.85rem;">
+                <div class="d-flex flex-wrap align-items-center gap-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 16px; height: 16px; border: 2px solid #22c55e; border-radius: 4px; background: #f0fdf4;"></div> 
+                        <span class="fw-semibold text-nowrap">Ada Pekerjaan</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 16px; height: 16px; background: #fff0f0; border: 1px solid #fecaca; border-radius: 4px;"></div> 
+                        <span class="fw-semibold text-nowrap">Libur Akhir Pekan</span>
+                    </div>
+                </div>
+
+                <div class="vr bg-secondary opacity-25 d-none d-md-block" style="width: 2px; height: 20px;"></div>
+                
+                <div class="d-flex flex-wrap align-items-center gap-3">
+                    <div class="d-flex align-items-center gap-2" title="Ada Deadline Terlewat">
+                        <i class="bi bi-exclamation-triangle-fill text-danger fs-5"></i> <span class="fw-semibold text-nowrap">Overdue</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2" title="Mendekati Deadline">
+                        <i class="bi bi-hourglass-bottom text-warning fs-5"></i> <span class="fw-semibold text-nowrap">Dekat Deadline</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2" title="Semua Pekerjaan Selesai">
+                        <i class="bi bi-briefcase-fill text-success fs-5"></i> <span class="fw-semibold text-nowrap">Selesai</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    {{-- 3. Calendar Grid --}}
-    <div class="calendar-container" style="margin-bottom: 90px;">
+    {{-- Calendar Grid --}}
+    <div class="calendar-wrapper">
         <div class="calendar-header-days">
             <div>Senin</div>
             <div>Selasa</div>
             <div>Rabu</div>
             <div>Kamis</div>
             <div>Jumat</div>
-            <div>Sabtu</div>
-            <div>Minggu</div>
+            <div class="text-danger">Sabtu</div>
+            <div class="text-danger">Minggu</div>
         </div>
 
         <div id="calendar-grid" class="calendar-grid">
-            {{-- Diisi secara dinamis via JS --}}
         </div>
     </div>
 
-    {{-- 4. Fixed Footer --}}
+    {{-- Fixed Footer --}}
     <footer class="bg-white p-3 text-center shadow-sm border-top border-light" 
             style="position: fixed; bottom: 0; right: 0; left: var(--sidebar-width, 260px); width: calc(100% - var(--sidebar-width, 260px)); z-index: 999;">
         <small class="text-muted" style="font-size: 11px; letter-spacing: 0.5px; display: block; font-family: sans-serif;">
@@ -405,9 +237,8 @@
 
 @push('scripts')
 <script>
+    let originalTaskData = []; 
     let taskData = [];
-    let originalTaskData = []; // Untuk menyimpan state mentah data tugas dari API
-
     let currentDate = new Date();
     let displayedYear = currentDate.getFullYear();
     let displayedMonth = currentDate.getMonth();
@@ -426,10 +257,12 @@
 
     function renderCalendar(year, month) {
         const gridContainer = document.getElementById('calendar-grid');
+        const monthSelect = document.getElementById('monthSelect');
+        const yearSelect = document.getElementById('yearSelect');
         gridContainer.innerHTML = ''; 
 
-        document.getElementById('monthSelect').value = month;
-        document.getElementById('yearSelect').value = year;
+        monthSelect.value = month;
+        yearSelect.value = year;
 
         let firstDayIndex = new Date(year, month, 1).getDay();
         let startOffset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
@@ -437,7 +270,6 @@
         const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
         const totalDaysInPrevMonth = new Date(year, month, 0).getDate();
 
-        // 1. Hari dari bulan sebelumnya (Muted)
         for (let i = startOffset; i > 0; i--) {
             const dayNum = totalDaysInPrevMonth - i + 1;
             gridContainer.innerHTML += `
@@ -446,37 +278,90 @@
                 </div>`;
         }
 
-        // 2. Hari aktif pada bulan berjalan
         for (let day = 1; day <= totalDaysInMonth; day++) {
             const currentStrDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
             const isToday = (new Date().toDateString() === new Date(year, month, day).toDateString());
             
-            let cellClass = "calendar-day-cell" + (isToday ? " today-cell" : "");
-            let numberClass = "calendar-day-number" + (isToday ? " today-number" : "");
+            const dayOfWeek = new Date(year, month, day).getDay();
+            const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+            
+            const holidayName = isWeekend ? 'Libur Akhir Pekan' : null;
+            
+            let cellClass = "calendar-day-cell";
+            let numberClass = "calendar-day-number";
+
+            let holidayHtml = '';
+            if (holidayName) {
+                cellClass += " holiday-cell";
+                numberClass += " holiday-number";
+                holidayHtml = `
+                    <div class="holiday-label">
+                        <i class="bi bi-calendar2-x-fill"></i> ${holidayName}
+                    </div>`;
+            }
+
+            if (isToday) {
+                cellClass += " today-cell";
+                numberClass += " today-number";
+            }
 
             const dayTasks = taskData.filter(t => t.date === currentStrDate);
-            let htmlTasks = dayTasks.map(task => {
-                let badgeClass = "task-status-upcoming";
-                if (task.status === 'selesai') badgeClass = "task-status-done";
-                if (task.status === 'overdue') badgeClass = "task-status-overdue";
+            let htmlTasks = '';
+            let taskIconHeader = '';
+            
+            let hasOverdue = false;
+            let hasUpcoming = false;
+            let hasDone = false;
 
-                return `
-                    <div class="calendar-task-item ${badgeClass}" data-task-id="${task.id}" title="#${task.number} ${task.title}">
-                        <span class="task-status-dot"></span>
-                        <span>#${task.number} ${task.title}</span>
-                    </div>`;
-            }).join('');
+            if (dayTasks.length > 0) {
+                cellClass += " has-task-cell";
+                
+                dayTasks.forEach(task => {
+                    let badgeClass = "";
+                    let iconHtml = "";
+                    
+                    if (task.status === 'selesai') {
+                        hasDone = true;
+                        badgeClass = "task-status-done";
+                        iconHtml = '<i class="bi bi-check-circle-fill"></i>';
+                    } else if (task.status === 'overdue') {
+                        hasOverdue = true;
+                        badgeClass = "task-status-overdue";
+                        iconHtml = '<i class="bi bi-exclamation-circle-fill"></i>';
+                    } else {
+                        hasUpcoming = true;
+                        badgeClass = "task-status-upcoming";
+                        iconHtml = '<i class="bi bi-clock-fill"></i>';
+                    }
+
+                    htmlTasks += `
+                        <div class="calendar-task-item ${badgeClass}" data-task-id="${task.id}" title="#${task.number} ${task.title}">
+                            ${iconHtml} <span class="text-truncate">${task.title}</span>
+                        </div>`;
+                });
+
+                if (hasOverdue) {
+                    taskIconHeader = `<i class="bi bi-exclamation-triangle-fill text-danger fs-5 ms-auto icon-overdue-alert" title="Ada Deadline Terlewat!"></i>`;
+                } else if (hasUpcoming) {
+                    taskIconHeader = `<i class="bi bi-hourglass-bottom text-warning fs-5 ms-auto" title="Mendekati Deadline!"></i>`;
+                } else if (hasDone) {
+                    taskIconHeader = `<i class="bi bi-briefcase-fill text-success fs-5 ms-auto" title="Semua Pekerjaan Selesai"></i>`;
+                }
+            }
 
             gridContainer.innerHTML += `
-                <a href="/calendar/date/${currentStrDate}" target="_blank" class="${cellClass}">
-                    <span class="${numberClass}">${day}</span>
+                <div class="${cellClass}" onclick="window.open('/calendar/date/${currentStrDate}', '_blank')">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <span class="${numberClass}">${day}</span>
+                        ${taskIconHeader}
+                    </div>
                     <div class="calendar-tasks-list">
                         ${htmlTasks}
                     </div>
-                </a>`;
+                    ${holidayHtml}
+                </div>`;
         }
 
-        // 3. Hari kosong di akhir grid kalender
         const totalCellsUsed = startOffset + totalDaysInMonth;
         const remainingCells = 42 - totalCellsUsed; 
         for (let i = 1; i <= remainingCells; i++) {
@@ -502,24 +387,8 @@
             displayedMonth = 11;
             displayedYear--;
         }
+        
         renderCalendar(displayedYear, displayedMonth);
-    }
-
-    // Fungsi Pencarian Client-Side
-    function initSearchFilter() {
-        const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.toLowerCase().trim();
-            if (query === '') {
-                taskData = [...originalTaskData];
-            } else {
-                taskData = originalTaskData.filter(t => 
-                    t.number.toLowerCase().includes(query) || 
-                    t.title.toLowerCase().includes(query)
-                );
-            }
-            renderCalendar(displayedYear, displayedMonth);
-        });
     }
 
     async function loadTasksAndRender() {
@@ -540,12 +409,15 @@
         renderCalendar(displayedYear, displayedMonth);
     }
 
+    function initSearchFilter() {
+        console.log("Filter pencarian kalender siap.");
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
-        populateYearDropdown();
+        populateYearDropdown(); 
         loadTasksAndRender();
         initSearchFilter();
         
-        // Delegasi event click item tugas untuk memicu Detail Modal
         document.getElementById('calendar-grid').addEventListener('click', async (e) => {
             const el = e.target.closest('[data-task-id]');
             if (!el) return;
@@ -565,7 +437,6 @@
         });
     });
 
-    // Inisialisasi pembacaan query parameter tanggal jika dilempar dari komponen dashboard lain
     (function handleInitialDateParam(){
         const params = new URLSearchParams(window.location.search);
         const date = params.get('date');
@@ -585,7 +456,6 @@
         }
     })();
 
-    // Modal Builder Helper
     function showTaskModal(detail) {
         let modal = document.getElementById('taskModal');
         if (!modal) {
@@ -596,7 +466,7 @@
             modal.style.backgroundColor = 'rgba(0,0,0,0.5)';
             modal.innerHTML = `
                 <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content border-0 shadow-lg rounded-3">
+                    <div class="modal-content border-0 shadow-lg rounded-4">
                         <div class="modal-header border-0 pb-0">
                             <h5 id="modalTitle" class="modal-title fw-bold text-dark"></h5>
                             <button id="closeModalBtn" type="button" class="btn-close" aria-label="Close"></button>
@@ -621,10 +491,10 @@
 
         document.getElementById('modalTitle').innerText = `#${detail.task_number ?? 'TGS'} ${detail.title}`;
         document.getElementById('modalBody').innerHTML = `
-            <p class="mb-2"><strong>Penanggung Jawab:</strong> ${detail.assignee ?? '-'} </p>
-            <p class="mb-2"><strong>Batas Waktu (Deadline):</strong> ${detail.deadline ?? '-'} </p>
-            <p class="mb-3"><strong>Status:</strong> ${detail.status ?? '-'} </p>
-            <div class="bg-light p-3 rounded-2 text-dark fs-7">${detail.description ?? 'Tidak ada deskripsi.'}</div>
+            <p class="mb-2"><i class="bi bi-person-fill text-primary me-2"></i><strong>PIC:</strong> ${detail.assignee ?? '-'} </p>
+            <p class="mb-2"><i class="bi bi-calendar-event-fill text-danger me-2"></i><strong>Deadline:</strong> ${detail.deadline ?? '-'} </p>
+            <p class="mb-3"><i class="bi bi-info-circle-fill text-info me-2"></i><strong>Status:</strong> ${detail.status ?? '-'} </p>
+            <div class="bg-light p-3 rounded-3 text-dark fs-7 border" style="border-color: #e2e8f0 !important;">${detail.description ?? 'Tidak ada deskripsi.'}</div>
         `;
         document.getElementById('openTask').href = `/tasks/${detail.id}`;
         modal.style.display = 'block';
