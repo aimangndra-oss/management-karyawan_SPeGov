@@ -1,8 +1,12 @@
+@use 'verification';
+@use 'landing';
+
 // Bootstrap 5 variable overrides (sebelum import Bootstrap)
 $primary: #2563eb;
 $sidebar-bg: linear-gradient(180deg, #2563eb 0%, #3b82f6 100%);
 
 @import 'bootstrap/scss/bootstrap';
+
 
 @tailwind base;
 @tailwind components;

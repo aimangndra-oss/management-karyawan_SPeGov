@@ -3,10 +3,15 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\TaskController;
+use App\Http\Controllers\VerificationController;
+use App\Http\Controllers\LandingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/login');
+Route::get('/', [VerificationController::class, 'index'])->name('verification.index');
+Route::post('/verify', [VerificationController::class, 'verify'])->name('verification.verify');
+Route::get('/home', [LandingController::class, 'index'])->name('landing');
+
 
 /*
 |--------------------------------------------------------------------------

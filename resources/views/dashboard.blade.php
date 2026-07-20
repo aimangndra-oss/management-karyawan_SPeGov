@@ -346,6 +346,7 @@
     </div>
 
     {{-- Task Table --}}
+    <h5 class="fs-6 fw-bold text-dark mb-3 mt-4 px-2">Tugas Terbaru</h5>
     <div class="task-table-wrapper" style="margin-bottom: 90px;">
         <table class="task-table">
             <thead>

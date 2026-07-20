@@ -1,0 +1,217 @@
+// Landing Page SCSS Styling
+
+.landing-body {
+    background-color: #ffffff;
+    color: #334155;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    scroll-behavior: smooth;
+}
+
+.navbar-landing {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    .logo-nav {
+        height: 44px;
+        object-fit: contain;
+    }
+
+    .brand-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.2;
+    }
+
+    .brand-title {
+        font-weight: 800;
+        font-size: 1.25rem;
+        color: #1e3a8a;
+        letter-spacing: 0.5px;
+    }
+
+    .brand-subtitle {
+        font-size: 0.75rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .nav-link {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #475569;
+        padding: 8px 16px !important;
+        transition: color 0.2s;
+
+        &:hover, &.active {
+            color: #1e3a8a;
+        }
+    }
+
+    .btn-login-nav {
+        background-color: #1e3a8a;
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 0.95rem;
+        padding: 8px 20px;
+        border-radius: 8px;
+        border: none;
+        transition: background-color 0.2s, transform 0.1s;
+
+        &:hover {
+            background-color: #1d4ed8;
+            color: #ffffff;
+        }
+
+        &:active {
+            transform: scale(0.98);
+        }
+    }
+}
+
+// Hero Section
+.hero-section {
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    position: relative;
+    overflow: hidden;
+
+    .hero-title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        color: #1e3a8a;
+        line-height: 1.2;
+        letter-spacing: -0.5px;
+    }
+
+    .hero-subtitle {
+        font-size: 1.15rem;
+        color: #475569;
+        line-height: 1.6;
+    }
+
+    .btn-hero-action {
+        background-color: #1e3a8a;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 1.05rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
+        transition: background-color 0.2s, box-shadow 0.2s, transform 0.1s;
+
+        &:hover {
+            background-color: #1d4ed8;
+            box-shadow: 0 6px 16px rgba(30, 58, 138, 0.3);
+        }
+
+        &:active {
+            transform: scale(0.98);
+        }
+    }
+
+    .hero-image-wrapper {
+        background: linear-gradient(135deg, #1e3a8a 0%, #0b1e3a 100%);
+        border-radius: 20px;
+        aspect-ratio: 16 / 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        position: relative;
+        overflow: hidden;
+        padding: 40px;
+
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .office-overlay-card {
+            text-align: center;
+            z-index: 2;
+        }
+    }
+}
+
+// Common Sections
+.section-title {
+    font-weight: 800;
+    color: #1e3a8a;
+    letter-spacing: -0.5px;
+}
+
+.section-text {
+    line-height: 1.7;
+    color: #475569;
+}
+
+.border-left-custom {
+    border-left: 4px solid #1e3a8a;
+}
+
+// Features Section
+.feature-card {
+    border-radius: 16px;
+    background-color: #ffffff;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    .feature-icon-wrapper {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        background-color: #eff6ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        i {
+            font-size: 1.5rem;
+        }
+    }
+
+    .feature-title {
+        font-weight: 700;
+        color: #1e3a8a;
+    }
+
+    .feature-desc {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+}
+
+// Contact Section
+.contact-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    i {
+        font-size: 1.2rem;
+    }
+}
+
+// Footer
+.footer-landing {
+    background-color: #0b1e3a;
+    color: #ffffff;
+    font-size: 0.9rem;
+}
