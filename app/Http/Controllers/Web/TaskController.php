@@ -150,7 +150,8 @@ class TaskController extends Controller
 
         $task->update($data);
 
-        return redirect()->route('tasks.show', $task)->with('success', 'Data tugas berhasil diperbarui.');
+        // BAGIAN INI YANG DIUBAH: redirect ke tasks.index
+        return redirect()->route('tasks.index')->with('success', 'Data tugas berhasil diperbarui.');
     }
 
     /**
