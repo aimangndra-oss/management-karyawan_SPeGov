@@ -10,7 +10,7 @@
 <body class="bg-white font-sans antialiased text-gray-900">
 
     <nav class="w-full bg-gradient-to-r from-blue-900 to-blue-500 shadow-md sticky top-0 z-50">
-        <div class="w-full px-4 sm:px-8 lg:px-12 flex flex-wrap justify-between items-center py-4 gap-4">
+        <div class="w-full px-4 sm:px-8 lgpx-12 flex flex-wrap justify-between items-center py-4 gap-4">
             
             <div class="flex items-center w-auto md:flex-1 justify-start">
                 <a href="#">
@@ -20,7 +20,6 @@
 
              <div class="flex space-x-6 md:space-x-12 overflow-x-auto w-full md:w-auto md:flex-1 justify-center order- md:order-none mt-2 md:mt-0 custom-scrollbar">
                 <a href="#home" class="nav-link pb-1 border-b-2 border-white text-xs font-semibold tracking-widest uppercase text-white whitespace-nowrap transition cursor-pointer">HOME</a>
-                <a href="#about" class="nav-link pb-1 border-b-2 border-transparent text-xs font-semibold tracking-widest uppercase text-blue-200 hover:text-white transition whitespace-nowrap cursor-pointer">TENTANG</a>
                 <a href="#features" class="nav-link pb-1 border-b-2 border-transparent text-xs font-bold tracking-widest uppercase text-blue-200 hover:text-white transition whitespace-nowrap cursor-pointer">FITUR</a>
                 <a href="#contact" class="nav-link pb-1 border-b-2 border-transparent text-xs font-semibold tracking-widest uppercase text-blue-200 hover:text-white transition whitespace-nowrap cursor-pointer">KONTAK</a>
             </div>
