@@ -69,35 +69,81 @@
         box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
     }
 
-    /* STYLE UNTUK HARI LIBUR / AKHIR PEKAN */
-    .holiday-cell {
-        background: #fff0f0 !important; 
+    /* 1. AKHIR PEKAN (SABTU & MINGGU BIASA) - MERAH */
+    .weekend-cell {
+        background: #fff1f2 !important; 
     }
-    .holiday-cell:hover {
-        background: #ffe4e4 !important;
+    .weekend-cell:hover {
+        background: #ffe4e6 !important;
     }
-    .holiday-number {
-        color: #dc2626 !important; 
-        background: #fee2e2;
+    .weekend-number {
+        color: #e11d48 !important; 
+        background: #fecdd3;
     }
-    .holiday-label {
+    .weekend-label {
         font-size: 0.65rem;
         font-weight: 700;
-        color: #dc2626;
+        color: #e11d48;
         margin-top: auto; 
         display: flex;
         align-items: center;
         gap: 0.25rem;
         justify-content: flex-end;
+        text-align: right;
     }
 
-    /* STYLE UNTUK HARI YANG ADA PEKERJAAN */
+    /* 2. HARI LIBUR NASIONAL / HARI BESAR - UNGU */
+    .holiday-cell {
+        background: #f5f3ff !important; 
+    }
+    .holiday-cell:hover {
+        background: #ede9fe !important;
+    }
+    .holiday-number {
+        color: #6d28d9 !important; 
+        background: #ddd6fe;
+    }
+    .holiday-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: #6d28d9;
+        margin-top: auto; 
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        justify-content: flex-end;
+        text-align: right;
+    }
+
+    /* 3. CUTI BERSAMA - AMBER / ORANGE */
+    .leave-cell {
+        background: #fffbeb !important;
+    }
+    .leave-cell:hover {
+        background: #fef3c7 !important;
+    }
+    .leave-number {
+        color: #d97706 !important;
+        background: #fde68a;
+    }
+    .leave-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: #d97706;
+        margin-top: auto;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        justify-content: flex-end;
+        text-align: right;
+    }
+
+    /* STYLE PEKERJAAN */
     .has-task-cell {
         box-shadow: inset 0 0 0 2px #22c55e !important;
         background: #f0fdf4; 
     }
     
-    /* ANIMASI UNTUK DEADLINE TERLEWAT */
     @keyframes pulse-danger {
         0% { transform: scale(1); }
         50% { transform: scale(1.25); color: #b91c1c; }
@@ -145,7 +191,7 @@
     <div class="bg-white p-3 p-md-4 rounded-4 shadow-sm mb-4 border-0">
         <div class="d-flex flex-column flex-xl-row align-items-start align-items-xl-center justify-content-between gap-4">
             
-            {{-- Navigasi Bulan, Tahun & Tombol --}}
+            {{-- Navigasi Bulan & Tahun --}}
             <div class="d-flex flex-wrap align-items-center gap-3">
                 <div class="d-flex align-items-center gap-2">
                     <select id="monthSelect" class="form-select fw-bold text-dark border-0 bg-light px-4 py-2 fs-6" style="min-width: 150px; cursor: pointer; border-radius: 0.75rem; box-shadow: none;" onchange="handleSelectChange()">
@@ -178,7 +224,7 @@
                 </div>
             </div>
 
-            {{-- Legend Lengkap --}}
+            {{-- Legend --}}
             <div class="d-flex flex-wrap align-items-center gap-3 gap-md-4 text-secondary bg-light px-4 py-3 rounded-4" style="font-size: 0.85rem;">
                 <div class="d-flex flex-wrap align-items-center gap-3">
                     <div class="d-flex align-items-center gap-2">
@@ -186,8 +232,16 @@
                         <span class="fw-semibold text-nowrap">Ada Pekerjaan</span>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <div style="width: 16px; height: 16px; background: #fff0f0; border: 1px solid #fecaca; border-radius: 4px;"></div> 
-                        <span class="fw-semibold text-nowrap">Libur Akhir Pekan</span>
+                        <div style="width: 16px; height: 16px; background: #fff1f2; border: 1px solid #fecdd3; border-radius: 4px;"></div> 
+                        <span class="fw-semibold text-nowrap">Akhir Pekan</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 16px; height: 16px; background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 4px;"></div> 
+                        <span class="fw-semibold text-nowrap">Hari Besar</span>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 16px; height: 16px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 4px;"></div> 
+                        <span class="fw-semibold text-nowrap">Cuti Bersama</span>
                     </div>
                 </div>
 
@@ -204,6 +258,7 @@
                         <i class="bi bi-briefcase-fill text-success fs-5"></i> <span class="fw-semibold text-nowrap">Selesai</span>
                     </div>
                 </div>
+
             </div>
 
         </div>
@@ -243,6 +298,129 @@
     let displayedYear = currentDate.getFullYear();
     let displayedMonth = currentDate.getMonth();
 
+    // 1. HARI LIBUR TETAP (Pasti Sama di Setiap Tahun)
+    const FIXED_HOLIDAYS = {
+        '01-01': { name: 'Tahun Baru Masehi', type: 'national' },
+        '05-01': { name: 'Hari Buruh Internasional', type: 'national' },
+        '06-01': { name: 'Hari Lahir Pancasila', type: 'national' },
+        '08-17': { name: 'Hari Kemerdekaan RI', type: 'national' },
+        '12-25': { name: 'Hari Raya Natal', type: 'national' }
+    };
+
+    // 2. DATABASE DATABASE HARI LIBUR BERGERAK & CUTI BERSAMA LENGKAP (2023 - 2028)
+    const HOLIDAY_DATABASE = {
+        // TAHUN 2024
+        '2024-01-08': { name: 'Isra Mikraj Nabi Muhammad SAW', type: 'national' },
+        '2024-02-09': { name: 'Cuti Bersama Imlek', type: 'leave' },
+        '2024-02-10': { name: 'Tahun Baru Imlek 2575', type: 'national' },
+        '2024-03-11': { name: 'Hari Raya Nyepi 1946', type: 'national' },
+        '2024-03-12': { name: 'Cuti Bersama Nyepi', type: 'leave' },
+        '2024-03-29': { name: 'Wafat Yesus Kristus', type: 'national' },
+        '2024-03-31': { name: 'Hari Paskah', type: 'national' },
+        '2024-04-08': { name: 'Cuti Bersama Idul Fitri', type: 'leave' },
+        '2024-04-09': { name: 'Cuti Bersama Idul Fitri', type: 'leave' },
+        '2024-04-10': { name: 'Hari Raya Idul Fitri 1445 H', type: 'national' },
+        '2024-04-11': { name: 'Hari Raya Idul Fitri 1445 H', type: 'national' },
+        '2024-04-12': { name: 'Cuti Bersama Idul Fitri', type: 'leave' },
+        '2024-04-15': { name: 'Cuti Bersama Idul Fitri', type: 'leave' },
+        '2024-05-09': { name: 'Kenaikan Yesus Kristus', type: 'national' },
+        '2024-05-10': { name: 'Cuti Bersama Kenaikan Yesus Kristus', type: 'leave' },
+        '2024-05-23': { name: 'Hari Raya Waisak 2568', type: 'national' },
+        '2024-05-24': { name: 'Cuti Bersama Waisak', type: 'leave' },
+        '2024-06-17': { name: 'Hari Raya Idul Adha 1445 H', type: 'national' },
+        '2024-06-18': { name: 'Cuti Bersama Idul Adha', type: 'leave' },
+        '2024-07-07': { name: 'Tahun Baru Islam 1446 H', type: 'national' },
+        '2024-09-16': { name: 'Maulid Nabi Muhammad SAW', type: 'national' },
+        '2024-12-26': { name: 'Cuti Bersama Natal', type: 'leave' },
+
+        // TAHUN 2025
+        '2025-01-27': { name: 'Isra Mikraj Nabi Muhammad SAW', type: 'national' },
+        '2025-01-28': { name: 'Cuti Bersama Imlek', type: 'leave' },
+        '2025-01-29': { name: 'Tahun Baru Imlek 2576', type: 'national' },
+        '2025-03-28': { name: 'Cuti Bersama Nyepi', type: 'leave' },
+        '2025-03-29': { name: 'Hari Raya Nyepi 1947', type: 'national' },
+        '2025-03-31': { name: 'Hari Raya Idul Fitri 1446 H', type: 'national' },
+        '2025-04-01': { name: 'Hari Raya Idul Fitri 1446 H', type: 'national' },
+        '2025-04-02': { name: 'Cuti Bersama Idul Fitri', type: 'leave' },
+        '2025-04-03': { name: 'Cuti Bersama Idul Fitri', type: 'leave' },
+        '2025-04-04': { name: 'Cuti Bersama Idul Fitri', type: 'leave' },
+        '2025-04-07': { name: 'Cuti Bersama Idul Fitri', type: 'leave' },
+        '2025-04-18': { name: 'Wafat Yesus Kristus', type: 'national' },
+        '2025-04-20': { name: 'Hari Paskah', type: 'national' },
+        '2025-05-12': { name: 'Hari Raya Waisak 2569', type: 'national' },
+        '2025-05-13': { name: 'Cuti Bersama Waisak', type: 'leave' },
+        '2025-05-29': { name: 'Kenaikan Yesus Kristus', type: 'national' },
+        '2025-05-30': { name: 'Cuti Bersama Kenaikan Yesus Kristus', type: 'leave' },
+        '2025-06-06': { name: 'Hari Raya Idul Adha 1446 H', type: 'national' },
+        '2025-06-09': { name: 'Cuti Bersama Idul Adha', type: 'leave' },
+        '2025-06-27': { name: 'Tahun Baru Islam 1447 H', type: 'national' },
+        '2025-09-05': { name: 'Maulid Nabi Muhammad SAW', type: 'national' },
+        '2025-12-26': { name: 'Cuti Bersama Natal', type: 'leave' },
+
+        // TAHUN 2026
+        '2026-01-16': { name: 'Isra Mikraj Nabi Muhammad SAW', type: 'national' },
+        '2026-02-16': { name: 'Cuti Bersama Imlek', type: 'leave' },
+        '2026-02-17': { name: 'Tahun Baru Imlek 2577', type: 'national' },
+        '2026-03-18': { name: 'Cuti Bersama Nyepi', type: 'leave' },
+        '2026-03-19': { name: 'Hari Raya Nyepi 1948', type: 'national' },
+        '2026-03-20': { name: 'Hari Raya Idul Fitri 1447 H', type: 'national' },
+        '2026-03-21': { name: 'Hari Raya Idul Fitri 1447 H', type: 'national' },
+        '2026-03-23': { name: 'Cuti Bersama Idul Fitri', type: 'leave' },
+        '2026-03-24': { name: 'Cuti Bersama Idul Fitri', type: 'leave' },
+        '2026-03-25': { name: 'Cuti Bersama Idul Fitri', type: 'leave' },
+        '2026-04-03': { name: 'Wafat Yesus Kristus', type: 'national' },
+        '2026-04-05': { name: 'Hari Kebangkitan Yesus Kristus (Paskah)', type: 'national' },
+        '2026-05-14': { name: 'Kenaikan Yesus Kristus', type: 'national' },
+        '2026-05-15': { name: 'Cuti Bersama Kenaikan Yesus Kristus', type: 'leave' },
+        '2026-05-27': { name: 'Hari Raya Idul Adha 1447 H', type: 'national' },
+        '2026-05-28': { name: 'Cuti Bersama Idul Adha', type: 'leave' },
+        '2026-05-31': { name: 'Hari Raya Waisak 2570', type: 'national' },
+        '2026-06-01': { name: 'Cuti Bersama Waisak', type: 'leave' },
+        '2026-06-16': { name: 'Tahun Baru Islam 1448 H', type: 'national' },
+        '2026-08-25': { name: 'Maulid Nabi Muhammad SAW', type: 'national' },
+        '2026-12-24': { name: 'Cuti Bersama Natal', type: 'leave' },
+
+        // TAHUN 2027
+        '2027-01-05': { name: 'Isra Mikraj Nabi Muhammad SAW', type: 'national' },
+        '2027-02-06': { name: 'Tahun Baru Imlek 2578', type: 'national' },
+        '2027-03-08': { name: 'Hari Raya Nyepi 1949', type: 'national' },
+        '2027-03-09': { name: 'Hari Raya Idul Fitri 1448 H', type: 'national' },
+        '2027-03-10': { name: 'Hari Raya Idul Fitri 1448 H', type: 'national' },
+        '2027-03-26': { name: 'Wafat Yesus Kristus', type: 'national' },
+        '2027-05-06': { name: 'Kenaikan Yesus Kristus', type: 'national' },
+        '2027-05-16': { name: 'Hari Raya Idul Adha 1448 H', type: 'national' },
+        '2027-05-20': { name: 'Hari Raya Waisak 2571', type: 'national' },
+        '2027-06-06': { name: 'Tahun Baru Islam 1449 H', type: 'national' },
+        '2027-08-15': { name: 'Maulid Nabi Muhammad SAW', type: 'national' },
+        '2027-12-24': { name: 'Cuti Bersama Natal', type: 'leave' }
+    };
+
+    function getHolidayInfo(year, month, day) {
+        const mm = String(month + 1).padStart(2, '0');
+        const dd = String(day).padStart(2, '0');
+        const fullDateStr = `${year}-${mm}-${dd}`;
+        const monthDayStr = `${mm}-${dd}`;
+
+        // 1. Prioritas 1: Database Libur Spesifik & Cuti Bersama (YYYY-MM-DD)
+        if (HOLIDAY_DATABASE[fullDateStr]) {
+            return HOLIDAY_DATABASE[fullDateStr];
+        }
+
+        // 2. Prioritas 2: Libur Tetap Tahunan (MM-DD)
+        if (FIXED_HOLIDAYS[monthDayStr]) {
+            return FIXED_HOLIDAYS[monthDayStr];
+        }
+
+        // 3. Prioritas 3: Akhir Pekan (Sabtu & Minggu Otomatis di SEMUA TAHUN)
+        const dateObj = new Date(year, month, day);
+        const dayOfWeek = dateObj.getDay();
+        if (dayOfWeek === 0 || dayOfWeek === 6) {
+            return { name: 'Akhir Pekan', type: 'weekend' };
+        }
+
+        return null;
+    }
+
     function populateYearDropdown() {
         const yearSelect = document.getElementById('yearSelect');
         const currentY = new Date().getFullYear();
@@ -259,17 +437,20 @@
         const gridContainer = document.getElementById('calendar-grid');
         const monthSelect = document.getElementById('monthSelect');
         const yearSelect = document.getElementById('yearSelect');
-        gridContainer.innerHTML = ''; 
-
+        
         monthSelect.value = month;
         yearSelect.value = year;
 
-        let firstDayIndex = new Date(year, month, 1).getDay();
-        let startOffset = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+        gridContainer.innerHTML = ''; 
+
+        // Logika Geser Hari: Minggu = 0 -> dikonversi agar Senin = Kolom 0
+        const rawFirstDay = new Date(year, month, 1).getDay();
+        const startOffset = (rawFirstDay === 0) ? 6 : rawFirstDay - 1;
 
         const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
         const totalDaysInPrevMonth = new Date(year, month, 0).getDate();
 
+        // Hari Pudar (Bulan Lalu)
         for (let i = startOffset; i > 0; i--) {
             const dayNum = totalDaysInPrevMonth - i + 1;
             gridContainer.innerHTML += `
@@ -278,26 +459,40 @@
                 </div>`;
         }
 
+        // Hari Utama (Bulan Aktif)
         for (let day = 1; day <= totalDaysInMonth; day++) {
             const currentStrDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
             const isToday = (new Date().toDateString() === new Date(year, month, day).toDateString());
-            
-            const dayOfWeek = new Date(year, month, day).getDay();
-            const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
-            
-            const holidayName = isWeekend ? 'Libur Akhir Pekan' : null;
-            
+
+            const holidayInfo = getHolidayInfo(year, month, day);
+
             let cellClass = "calendar-day-cell";
             let numberClass = "calendar-day-number";
-
             let holidayHtml = '';
-            if (holidayName) {
-                cellClass += " holiday-cell";
-                numberClass += " holiday-number";
-                holidayHtml = `
-                    <div class="holiday-label">
-                        <i class="bi bi-calendar2-x-fill"></i> ${holidayName}
-                    </div>`;
+
+            if (holidayInfo) {
+                if (holidayInfo.type === 'leave') {
+                    cellClass += " leave-cell";
+                    numberClass += " leave-number";
+                    holidayHtml = `
+                        <div class="leave-label">
+                            <i class="bi bi-airplane-fill"></i> ${holidayInfo.name}
+                        </div>`;
+                } else if (holidayInfo.type === 'national') {
+                    cellClass += " holiday-cell";
+                    numberClass += " holiday-number";
+                    holidayHtml = `
+                        <div class="holiday-label">
+                            <i class="bi bi-star-fill"></i> ${holidayInfo.name}
+                        </div>`;
+                } else if (holidayInfo.type === 'weekend') {
+                    cellClass += " weekend-cell";
+                    numberClass += " weekend-number";
+                    holidayHtml = `
+                        <div class="weekend-label">
+                            <i class="bi bi-calendar2-x-fill"></i> ${holidayInfo.name}
+                        </div>`;
+                }
             }
 
             if (isToday) {
@@ -362,8 +557,11 @@
                 </div>`;
         }
 
+        // Hari Pudar (Bulan Depan)
         const totalCellsUsed = startOffset + totalDaysInMonth;
-        const remainingCells = 42 - totalCellsUsed; 
+        const totalGridCells = Math.ceil(totalCellsUsed / 7) * 7; 
+        const remainingCells = totalGridCells - totalCellsUsed;
+
         for (let i = 1; i <= remainingCells; i++) {
             gridContainer.innerHTML += `
                 <div class="calendar-day-cell muted-day">
@@ -409,14 +607,9 @@
         renderCalendar(displayedYear, displayedMonth);
     }
 
-    function initSearchFilter() {
-        console.log("Filter pencarian kalender siap.");
-    }
-
     document.addEventListener("DOMContentLoaded", () => {
         populateYearDropdown(); 
         loadTasksAndRender();
-        initSearchFilter();
         
         document.getElementById('calendar-grid').addEventListener('click', async (e) => {
             const el = e.target.closest('[data-task-id]');
