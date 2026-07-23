@@ -25,6 +25,7 @@
         font-size: 1.75rem;
         font-weight: 700;
         flex-shrink: 0;
+        object-fit: cover;
     }
     .profile-card {
         border: none;
@@ -78,9 +79,13 @@
 <div class="container-fluid py-4">
 
     <div class="profile-header-card">
-        <div class="profile-header-avatar">
-            {{ strtoupper(substr($user->name, 0, 1)) }}
-        </div>
+        @if ($user->avatar)
+            <img src="{{ asset('storage/' . $user->avatar) }}" alt="Foto Profil" class="profile-header-avatar">
+        @else
+            <div class="profile-header-avatar">
+                {{ strtoupper(substr($user->name, 0, 1)) }}
+            </div>
+        @endif
         <div>
             <h4 class="fw-bold mb-1">{{ $user->name }}</h4>
             <div class="opacity-75">{{ $user->email }}</div>

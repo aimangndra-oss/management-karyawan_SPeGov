@@ -176,9 +176,13 @@
                     <div class="user-name">{{ Auth::user()->name }}</div>
                     <div class="user-role">{{ Auth::user()->role->label() }}</div>
                 </div>
-                <div class="user-avatar shadow-sm">
-                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                </div>
+              @if (Auth::user()->avatar)
+                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Profil" class="user-avatar shadow-sm" style="object-fit: cover;">
+                @else
+                    <div class="user-avatar shadow-sm">
+                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                    </div>
+                @endif
             </div>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
                 <li>
